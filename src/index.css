@@ -1,0 +1,45 @@
+@import '@arcgis/core/assets/esri/themes/light/main.css';
+
+:root {
+  --blue: #0f6cbd;
+  --blue-dark: #0b5394;
+  --blue-light: #9cc4e8;
+  --blue-wash: #eaf3fb;
+  --ink: #252423;
+  --ink-2: #484644;
+  --muted: #605e5c;
+  --line: #d9d9d9;
+  --sidebar: #f3f3f3;
+  --page: #ffffff;
+  font-family: 'Segoe UI', 'Segoe UI Web', 'Inter', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--page);
+  -webkit-font-smoothing: antialiased;
+
+  /* Tint the ArcGIS / Calcite widgets with the dashboard blue. */
+  --calcite-color-brand: var(--blue);
+  --calcite-color-brand-hover: var(--blue-dark);
+  --calcite-color-brand-press: var(--blue-dark);
+  --calcite-font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}

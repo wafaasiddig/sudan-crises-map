@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import MapPanel from './MapPanel'
+import Logo from './Logo'
 import { useStats, KpiRow, ChartCard } from './stats'
 import { VIEWS, DISCLAIMER } from './config'
 import './App.css'
@@ -52,10 +53,7 @@ export default function App() {
     <div className={`app${navOpen ? ' nav-open' : ''}`}>
       <aside className="sidebar">
         <div className="sidebar-brand">
-          <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true">
-            <circle cx="16" cy="16" r="13" fill="none" stroke="currentColor" strokeWidth="2.2" />
-            <path d="M3 16h26M16 3c3.6 3.6 5.4 8 5.4 13S19.6 25.4 16 29M16 3c-3.6 3.6-5.4 8-5.4 13s1.8 9.4 5.4 13" fill="none" stroke="currentColor" strokeWidth="1.8" />
-          </svg>
+          <Logo />
           <div>
             <div className="brand-name">Sudan Crisis</div>
             <div className="brand-sub">Regional Map</div>

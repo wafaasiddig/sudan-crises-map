@@ -1,0 +1,55 @@
+.columns {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 14px;
+  min-height: 160px;
+  padding: 0 4px;
+}
+
+.col {
+  flex: 1;
+  max-width: 76px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.col-plot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.col-value {
+  font-size: 11px;
+  color: var(--ink);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+.col-bar {
+  display: block;
+  background: var(--blue);
+  min-height: 2px;
+  transition: height 0.4s ease;
+}
+
+.col:hover .col-bar {
+  background: var(--blue-dark);
+}
+
+.col-label {
+  margin-top: 6px;
+  font-size: 11px;
+  line-height: 1.25;
+  color: var(--ink-2);
+  text-align: center;
+  text-transform: capitalize;
+  overflow-wrap: anywhere;
+  min-height: 2.5em;
+}

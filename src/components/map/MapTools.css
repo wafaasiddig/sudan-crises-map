@@ -1,0 +1,86 @@
+.map-tools {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.tool-row {
+  display: flex;
+  gap: 6px;
+}
+
+.tool-btn {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 2px;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
+}
+
+.tool-btn:hover,
+.tool-btn.active {
+  background: var(--blue-dark);
+}
+
+.tool-popover {
+  width: 300px;
+  max-height: min(480px, calc(100vh - 320px));
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.16);
+  overflow: hidden;
+}
+
+.tool-popover[hidden] {
+  display: none;
+}
+
+.tool-popover-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px 8px 12px;
+  font-size: 12.5px;
+  font-weight: 700;
+  border-bottom: 1px solid var(--line);
+}
+
+.tool-popover-head button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.tool-popover-head button:hover {
+  background: #f3f2f1;
+  color: var(--ink);
+}
+
+.tool-popover-body {
+  overflow: auto;
+}
+
+.tool-popover-body .esri-layer-list {
+  font-size: 13px;
+}
+
+@media (max-width: 960px) {
+  .tool-popover {
+    width: min(280px, calc(100vw - 80px));
+  }
+}

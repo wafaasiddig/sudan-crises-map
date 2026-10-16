@@ -1,0 +1,132 @@
+.filters {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  min-height: 64px;
+  padding: 6px 24px 10px;
+  border-bottom: 1px solid var(--line);
+  background: #fff;
+}
+
+.filter {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.filter-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.select {
+  width: 220px;
+  height: 32px;
+  padding: 0 32px 0 10px;
+  border: 1px solid #c8c6c4;
+  border-radius: 2px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath d='M7 9l5 5 5-5' fill='none' stroke='%23605e5c' stroke-width='2'/%3E%3C/svg%3E")
+      no-repeat right 10px center,
+    #fff;
+  color: var(--ink);
+  font-size: 13px;
+  appearance: none;
+  cursor: pointer;
+}
+
+.select:hover {
+  border-color: var(--ink-2);
+}
+
+.segmented {
+  display: flex;
+  gap: 4px;
+}
+
+.segmented button {
+  min-width: 96px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid #e1dfdd;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+}
+
+.segmented button:hover {
+  background: var(--blue-wash);
+}
+
+.segmented button.on {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}
+
+.filter-search {
+  margin-left: auto;
+  width: 260px;
+}
+
+.search-host .esri-search {
+  width: 100%;
+  box-shadow: none;
+  border: 1px solid #c8c6c4;
+  border-radius: 2px;
+}
+
+.nav-toggle {
+  display: none;
+  align-self: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  background: transparent;
+  color: var(--blue);
+  cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+  .filters {
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+
+  .filter-search {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 960px) {
+  .nav-toggle {
+    display: grid;
+    place-items: center;
+  }
+
+  .filters {
+    padding: 8px 16px 12px;
+  }
+
+  .filter,
+  .filter-search,
+  .select {
+    width: 100%;
+  }
+
+  .filter:not(.filter-search) {
+    flex: 1 1 200px;
+  }
+
+  .segmented button {
+    flex: 1;
+    min-width: 0;
+  }
+}

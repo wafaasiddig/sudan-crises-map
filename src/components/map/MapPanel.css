@@ -1,0 +1,44 @@
+.map-panel,
+.map-view {
+  position: absolute;
+  inset: 0;
+}
+
+.map-view .esri-scale-bar {
+  background: rgb(255 255 255 / 0.85);
+  padding: 2px 6px;
+}
+
+.map-status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-size: 12.5px;
+  z-index: 3;
+}
+
+.map-status.error {
+  color: #a4262c;
+}
+
+.dot-pulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue);
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+  }
+}

@@ -9,6 +9,8 @@ export default function MapPanel({ activeView, searchRef, onViewReady }) {
   const toolsDiv = useRef(null)
   const panelRefs = { layers: useRef(null), legend: useRef(null), basemap: useRef(null) }
   const state = useRef({})
+  const activeViewRef = useRef(activeView)
+  activeViewRef.current = activeView
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(null)
 
@@ -23,11 +25,16 @@ export default function MapPanel({ activeView, searchRef, onViewReady }) {
     state.current = { map, view }
     if (import.meta.env.DEV) window.__view = view // handy for debugging in the console
     map
-      .loadAll()
+      .load()
+      .then(() => {
+        // Apply the tab as soon as the layer tree exists, so the layer list never shows every group.
+        state.current.defaults = snapshotDefaults(map.layers)
+        applyView(map, activeViewRef.current, state.current.defaults)
+      })
+      .then(() => map.loadAll())
       .catch(() => {}) // a single failing service should not block the rest
       .then(() => view.when())
       .then(() => {
-        state.current.defaults = snapshotDefaults(map.layers)
         setReady(true)
         onViewReady?.(view)
       })

@@ -4,9 +4,24 @@
   inset: 0;
 }
 
-.map-view .esri-scale-bar {
+/* Rounded, floating look for the built-in zoom / home / fullscreen buttons. */
+.map-view .esri-ui-corner .esri-component {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.map-view .esri-ui-corner .esri-component.map-tools {
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.map-view .esri-ui-corner .esri-scale-bar.esri-component {
   background: rgb(255 255 255 / 0.85);
-  padding: 2px 6px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  box-shadow: none;
 }
 
 .map-status {
@@ -17,28 +32,23 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 14px;
+  padding: 10px 16px;
   background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  font-size: 12.5px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  font-size: 13px;
+  font-weight: 500;
   z-index: 3;
 }
 
 .map-status.error {
-  color: #a4262c;
+  color: #b91c1c;
 }
 
 .dot-pulse {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
   border-radius: 50%;
-  background: var(--blue);
+  background: var(--accent);
   animation: pulse 1s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  50% {
-    opacity: 0.35;
-  }
 }

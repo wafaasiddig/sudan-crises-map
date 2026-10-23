@@ -5,7 +5,7 @@ function findLayer(view, title) {
 // Statistics query, optionally limited to a geometry; honours the layer's definition expression.
 export async function queryStats(view, title, outStatistics, groupBy, geometry) {
   const layer = findLayer(view, title)
-  if (!layer) return []
+  if (!layer) throw new Error(`Statistics layer unavailable: ${title}`)
   await layer.load()
   const q = layer.createQuery()
   if (geometry) q.geometry = geometry
@@ -16,7 +16,7 @@ export async function queryStats(view, title, outStatistics, groupBy, geometry) 
     outStatisticFieldName: out,
   }))
   if (groupBy) {
-    q.groupByFieldsForStatistics = [groupBy]
+    q.groupByFieldsForStatistics = [].concat(groupBy)
     q.orderByFields = [`${outStatistics[0][2]} DESC`]
   }
   const res = await layer.queryFeatures(q)

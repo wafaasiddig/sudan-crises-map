@@ -7,10 +7,20 @@ const AGE = [
   ['Elderly_total', 'Elderly (60+)'],
 ]
 
+// Health facility types with the original app's chart colours (they match the map symbols).
+const OTHER = 'other'
+const AMENITY = [
+  ['clinic', 'Clinic', '#fb8c00'],
+  ['health_post', 'Health post', '#77b484'],
+  ['hospital', 'Hospital', '#b71c1c'],
+  [OTHER, 'Undefined', '#d6d6d6'],
+]
+
 /**
  * One loader per theme (keyed by view id). Each returns
  *  kpis   – three { icon, value, label } tiles (icon is a key of ICONS)
- *  charts – a donut and a columns chart as { type, title, data: [[label, value]] }
+ *  charts – usually a donut and a columns chart as { type, title, data: [[label, value]] };
+ *           a 'stackedBars' chart also takes series (see components/charts/StackedBars)
  *  source – optional attribution for the footnote
  */
 export const LOADERS = {
@@ -63,19 +73,32 @@ export const LOADERS = {
   },
   async services(view, g) {
     const [health, [schools = {}]] = await Promise.all([
-      stats(view, 'Healthsites', [['count', 'ObjectId', 'n']], 'countryName', g),
+      stats(view, 'Healthsites', [['count', 'ObjectId', 'n']], ['countryName', 'amenity'], g),
       stats(view, 'Schools (JRC, Giga, OSM)', [['count', 'ObjectId', 'n']], null, g),
     ])
     const facilities = sum(health, 'n')
+    const byCountry = {}
+    const byType = {}
+    health.forEach((r) => {
+      const values = (byCountry[r.countryName || 'Unknown'] ??= {})
+      const key = AMENITY.some(([k]) => k === r.amenity) ? r.amenity : OTHER
+      values[key] = (values[key] || 0) + r.n
+      byType[key] = (byType[key] || 0) + r.n
+    })
+    // Like the original app, the Services tab has a single chart.
     return {
       kpis: [
-        { icon: 'hospital', value: fmt(facilities), label: 'Health facilities' },
-        { icon: 'school', value: fmt(schools.n), label: 'Schools' },
-        { icon: 'flag', value: fmt(health.filter((r) => r.countryName).length), label: 'Countries covered' },
+        { icon: 'health', value: fmt(facilities), label: 'Health facilities' },
+        { icon: 'education', value: fmt(schools.n), label: 'Schools' },
+        { icon: 'flag', value: fmt(Object.keys(byCountry).length), label: 'Countries covered' },
       ],
       charts: [
-        { type: 'donut', title: '% of sites: health facilities vs schools', data: [['Health facilities', facilities], ['Schools', schools.n]] },
-        { type: 'columns', title: 'Health facilities by country', data: health.slice(0, 8).map((r) => [r.countryName || 'Unknown', r.n]) },
+        {
+          type: 'stackedBars',
+          title: 'Healthsites by country and type',
+          series: AMENITY.filter(([k]) => byType[k]),
+          data: Object.entries(byCountry),
+        },
       ],
       source: 'healthsites.io (OSM); JRC, Giga, OSM',
     }

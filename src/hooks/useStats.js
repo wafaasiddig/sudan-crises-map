@@ -2,27 +2,34 @@ import { useEffect, useState } from 'react'
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils'
 import { LOADERS } from '../services/statsLoaders'
 
-/** Loads the active theme's statistics, for the map extent or the whole region. */
-export function useStats(view, activeView, scope) {
+/** Loads the active theme's statistics, for the map extent, a selected area or the whole region. */
+export function useStats(view, activeView, scope, area) {
   const [state, setState] = useState({ result: null, loading: true, error: null })
 
   useEffect(() => {
     if (!view) return
     let cancelled = false
     let timer
+    let latest = 0
     const run = () => {
+      const request = ++latest
       clearTimeout(timer)
       timer = setTimeout(async () => {
-        setState((s) => ({ ...s, loading: true }))
+        setState((s) => ({ ...s, loading: true, error: null }))
         try {
-          const result = await LOADERS[activeView.id](view, scope === 'extent' ? view.extent : null)
-          if (!cancelled) setState({ result, loading: false, error: null })
+          // Until a place is clicked, "Selected area" shows the whole region.
+          const geometry = scope === 'extent' ? view.extent : scope === 'selection' ? (area?.geometry ?? null) : null
+          const result = await LOADERS[activeView.id](view, geometry)
+          if (!cancelled && request === latest) setState({ result, loading: false, error: null })
         } catch (e) {
-          if (!cancelled) setState((s) => ({ ...s, loading: false, error: e.message }))
+          if (!cancelled && request === latest) setState((s) => ({ ...s, loading: false, error: e.message }))
         }
       }, 400)
     }
-    setState({ result: null, loading: true, error: null })
+    // Reset after subscribing, without triggering a synchronous effect render.
+    queueMicrotask(() => {
+      if (!cancelled) setState({ result: null, loading: true, error: null })
+    })
     run()
     const handle =
       scope === 'extent' &&
@@ -35,7 +42,7 @@ export function useStats(view, activeView, scope) {
       clearTimeout(timer)
       if (handle) handle.remove()
     }
-  }, [view, activeView, scope])
+  }, [view, activeView, scope, area])
 
   return state
 }

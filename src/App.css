@@ -1,102 +1,276 @@
 /* Page layout only — each component styles itself in its own .css file. */
 .app {
-  display: grid;
-  grid-template-columns: 200px 1fr;
+  display: flex;
+  flex-direction: column;
   height: 100%;
 }
 
-.main {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
-}
-
-.content {
+/* Full-bleed map with floating cards on top. */
+.stage {
   flex: 1;
   min-height: 0;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  padding: 16px 24px 14px;
-  gap: 14px;
-}
-
-.page-title {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-}
-
-.grid {
-  flex: 1;
-  min-height: 460px;
-  display: grid;
-  grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr);
-  gap: 16px;
-}
-
-.map-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.map-frame {
   position: relative;
-  flex: 1;
-  min-height: 360px;
-  border: 1px solid #eee;
 }
 
-.error-msg {
-  font-size: 12.5px;
-  color: #a4262c;
-  text-align: center;
-  margin: 0;
+.stage > .map-panel {
+  position: absolute;
+  inset: 0;
 }
 
-.footnote {
+.card {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  background: rgb(255 255 255 / 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.card-head {
   flex: none;
-  margin: 0;
-  font-size: 11px;
-  line-height: 1.5;
-  color: var(--muted);
-  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--line);
 }
 
-.scrim {
+.card-title {
+  min-width: 0;
+  flex: 1;
+}
+
+.card-title h1,
+.card-title h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.card-title p {
+  margin: 2px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon-btn {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 12%, white);
+  color: var(--accent);
+  cursor: pointer;
+  transition: background 0.2s, color 0.3s;
+}
+
+.icon-btn:hover {
+  background: color-mix(in srgb, var(--accent) 20%, white);
+}
+
+.icon-btn.ghost {
+  width: 28px;
+  height: 28px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.icon-btn.ghost:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+/* ---- Layers card ---- */
+.layers-card {
+  left: 16px;
+  width: 280px;
+  transition: width 0.25s ease;
+}
+
+.layers-card.collapsed {
+  width: 60px;
+  bottom: auto;
+}
+
+.layers-card.collapsed .card-head {
+  padding: 12px;
+  border-bottom: 0;
+}
+
+.layers-card.collapsed .card-title,
+.layers-card.collapsed .chevron,
+.layers-card.collapsed .layer-list {
   display: none;
 }
 
+.layer-list {
+  flex: 1;
+  overflow: auto;
+  padding: 6px 4px 10px;
+}
+
+.layer-list .esri-layer-list {
+  background: transparent;
+  font-size: 13px;
+}
+
+/* ---- Insights card ---- */
+.stats-card {
+  right: 16px;
+  width: 372px;
+}
+
+.insights-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1;
+}
+
+.insights-content[hidden] {
+  display: none;
+}
+
+.stats-card.collapsed {
+  width: 60px;
+  bottom: auto;
+}
+
+.stats-card.collapsed .card-head {
+  padding: 12px;
+  border-bottom: 0;
+}
+
+.stats-card.collapsed .card-title {
+  display: none;
+}
+
+.stats-body {
+  flex: 1;
+  overflow: auto;
+  display: grid;
+  align-content: start;
+  gap: 12px;
+  padding: 16px;
+}
+
+.error-msg {
+  margin: 0;
+  font-size: 12.5px;
+  color: #b91c1c;
+  text-align: center;
+}
+
+.note {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.note svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.note p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.note .source {
+  color: var(--ink-2);
+}
+
+/* ---- Small screens: map, then layers, then insights ---- */
 @media (max-width: 960px) {
   .app {
-    grid-template-columns: 1fr;
     height: auto;
     min-height: 100%;
   }
 
-  .scrim {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 15;
-    background: rgb(0 0 0 / 0.3);
+  .stage > .map-panel {
+    flex: none;
+    min-height: 320px;
   }
 
-  .content {
-    padding: 14px 16px;
+  .stage {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px 16px;
+  }
+
+  .stage > .map-panel {
+    position: relative;
+    inset: auto;
+    height: 62vh;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .card,
+  .layers-card,
+  .layers-card.collapsed,
+  .stats-card.collapsed,
+  .stats-card {
+    position: relative;
+    inset: auto;
+    width: auto;
+  }
+
+  .layers-card {
+    max-height: 340px;
+  }
+
+  .layers-card.collapsed .card-title {
+    display: block;
+  }
+
+  .stats-card.collapsed .card-title {
+    display: block;
+  }
+
+  .insights-content {
+    flex: none;
+  }
+
+  .stats-body {
     overflow: visible;
   }
+}
 
-  .grid {
-    grid-template-columns: 1fr;
-    min-height: 0;
+@media (max-width: 480px) {
+  .stage {
+    padding: 10px;
+    gap: 10px;
   }
 
-  .map-frame {
-    min-height: 58vh;
+  .stats-body {
+    padding: 12px;
+  }
+
+  .card-title p {
+    white-space: normal;
   }
 }

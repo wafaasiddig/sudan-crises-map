@@ -1,3 +1,6 @@
+import clusterHealth from '../../assets/icons/cluster_health.png'
+import clusterEducation from '../../assets/icons/cluster_education.png'
+
 // Shared 24×24 icon paths, used by <Icon d={ICONS.x} />.
 export const ICONS = {
   // themes & KPIs
@@ -17,9 +20,18 @@ export const ICONS = {
   gauge: 'M12 4a10 10 0 0 0-8.7 15h17.4A10 10 0 0 0 12 4zm1 9.7-1.4 1.4-1.4-1.4L15.5 8z',
   leaf: 'M20 3C9 3 4 9 4 15c0 1.8.5 3.4 1.2 4.6L3.3 21.5l1.4 1.4 2-2C7.9 21.6 9.4 22 11 22c7 0 10-7 9-19zM8.5 18.9C10 15 13 11.5 16 10c-3.5 2.5-5.7 6-6.6 9.3-.3-.1-.6-.2-.9-.4z',
   // UI
+  search: 'M10.5 3a7.5 7.5 0 0 1 5.96 12.05l4.25 4.24-1.42 1.42-4.24-4.25A7.5 7.5 0 1 1 10.5 3zm0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z',
+  chevronLeft: 'M14.7 6.3 9 12l5.7 5.7 1.4-1.4L11.8 12l4.3-4.3z',
+  info: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm1 15h-2v-6h2zm0-8h-2V7h2z',
   menu: 'M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z',
   close: 'M6.4 5 12 10.6 17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4z',
-  layers: 'M3 5h18v2H3zm0 6h18v2H3zm0 6h18v2H3z',
+  layers: 'M12 2 1.5 7.5 12 13l10.5-5.5zm-8.2 9.4L1.5 12.6 12 18.1l10.5-5.5-2.3-1.2L12 15.7zm0 5L1.5 17.6 12 23.1l10.5-5.5-2.3-1.2L12 20.7z',
   legend: 'M4 5h3v3H4zm5 .5h11v2H9zM4 10.5h3v3H4zm5 .5h11v2H9zM4 16h3v3H4zm5 .5h11v2H9z',
-  basemap: 'M12 2 1.5 7.5 12 13l10.5-5.5zm-8.2 9.4L1.5 12.6 12 18.1l10.5-5.5-2.3-1.2L12 15.7zm0 5L1.5 17.6 12 23.1l10.5-5.5-2.3-1.2L12 20.7z',
+  basemap: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
+}
+
+// UNHCR cluster icons from the original app, used in place of a path icon where a KPI names one.
+export const IMAGES = {
+  health: clusterHealth,
+  education: clusterEducation,
 }

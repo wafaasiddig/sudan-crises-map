@@ -4,7 +4,7 @@ import { ICONS } from '../common/icons'
 import './MapTools.css'
 
 const TOOLS = [
-  { id: 'layers', title: 'Layers', icon: ICONS.layers },
+  { id: 'search', title: 'Search places', icon: ICONS.search },
   { id: 'legend', title: 'Legend', icon: ICONS.legend },
   { id: 'basemap', title: 'Basemaps', icon: ICONS.basemap },
 ]
@@ -14,7 +14,12 @@ export default function MapTools({ ref, panelRefs }) {
   const [openTool, setOpenTool] = useState(null)
 
   return (
-    <div ref={ref} className="map-tools">
+    <div ref={ref} className="map-tools" onKeyDown={(event) => {
+      if (event.key === 'Escape') {
+        setOpenTool(null)
+        event.currentTarget.querySelector('.tool-btn.active')?.focus()
+      }
+    }}>
       <div className="tool-row">
         {TOOLS.map((t) => (
           <button
@@ -23,6 +28,8 @@ export default function MapTools({ ref, panelRefs }) {
             title={t.title}
             aria-label={t.title}
             aria-pressed={openTool === t.id}
+            aria-expanded={openTool === t.id}
+            aria-controls={`map-tool-${t.id}`}
             onClick={() => setOpenTool(openTool === t.id ? null : t.id)}
           >
             <Icon d={t.icon} size={18} />
@@ -30,7 +37,7 @@ export default function MapTools({ ref, panelRefs }) {
         ))}
       </div>
       {TOOLS.map((t) => (
-        <div key={t.id} className={`tool-popover tool-${t.id}`} hidden={openTool !== t.id}>
+        <div key={t.id} id={`map-tool-${t.id}`} className={`tool-popover tool-${t.id}`} hidden={openTool !== t.id}>
           <div className="tool-popover-head">
             <span>{t.title}</span>
             <button onClick={() => setOpenTool(null)} aria-label="Close">

@@ -1,58 +1,132 @@
-import { useRef, useState } from 'react'
-import Sidebar from './components/Sidebar/Sidebar'
+import { useEffect, useRef, useState } from 'react'
+import TopBar from './components/TopBar/TopBar'
 import FilterBar from './components/FilterBar/FilterBar'
 import KpiRow from './components/KpiRow/KpiRow'
 import ChartList from './components/charts/ChartList'
 import MapPanel from './components/map/MapPanel'
-import Panel from './components/common/Panel'
+import Icon from './components/common/Icon'
+import { ICONS } from './components/common/icons'
 import { useStats } from './hooks/useStats'
+import { useSelectedArea } from './hooks/useSelectedArea'
 import { VIEWS, DISCLAIMER } from './config/views'
 import './App.css'
+
+const DESKTOP = '(min-width: 961px)'
+const NO_PADDING = { left: 0, right: 0, top: 0, bottom: 0 }
+
+function useMedia(query) {
+  const [matches, setMatches] = useState(() => window.matchMedia(query).matches)
+  useEffect(() => {
+    const mq = window.matchMedia(query)
+    const onChange = () => setMatches(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [query])
+  return matches
+}
 
 export default function App() {
   const [activeView, setActiveView] = useState(VIEWS[0])
   const [view, setView] = useState(null)
   const [scope, setScope] = useState('extent')
-  const [navOpen, setNavOpen] = useState(false)
-  const searchRef = useRef(null)
-  const { result, loading, error } = useStats(view, activeView, scope)
+  const [layersOpen, setLayersOpen] = useState(true)
+  const [insightsOpen, setInsightsOpen] = useState(true)
+  const isDesktop = useMedia(DESKTOP)
+  const layersRef = useRef(null)
+  const area = useSelectedArea(view, scope === 'selection')
+  const { result, loading, error } = useStats(view, activeView, scope, area)
 
-  const selectView = (v) => {
-    setActiveView(v)
-    setNavOpen(false)
-  }
+  // Space taken by the floating cards, so the map centres in what's left visible.
+  const padding = isDesktop ? { left: layersOpen ? 312 : 76, right: insightsOpen ? 404 : 76, top: 0, bottom: 0 } : NO_PADDING
+
+  const scopeNote =
+    scope === 'extent'
+      ? 'Figures update for the area shown on the map. '
+      : scope === 'selection'
+        ? area
+          ? `Figures cover ${area.name}; click another place on the map to change it. `
+          : 'Click a place on the map to see its figures; until then they cover the whole region. '
+        : 'Figures cover the whole region. '
+
+  const status = loading
+    ? 'Updating…'
+    : scope === 'extent'
+      ? 'Live for the current map extent'
+      : scope === 'selection' && area
+        ? `Selected area: ${area.name}`
+        : 'Whole region'
 
   return (
-    <div className={`app${navOpen ? ' nav-open' : ''}`}>
-      <Sidebar activeView={activeView} onSelect={selectView} />
+    <div className="app" style={{ '--accent': activeView.accent }}>
+      <TopBar activeView={activeView} onSelect={setActiveView} />
 
-      <div className="main">
-        <FilterBar view={view} scope={scope} onScopeChange={setScope} searchRef={searchRef} navOpen={navOpen} onToggleNav={() => setNavOpen(!navOpen)} />
+      <main className="stage" id="map-workspace" aria-label={`${activeView.label} map workspace`}>
+        <MapPanel activeView={activeView} layersRef={layersRef} padding={padding} onViewReady={setView} />
 
-        <div className="content">
-          <h1 className="page-title">{activeView.label}</h1>
+        <section className={`card layers-card${layersOpen ? '' : ' collapsed'}`} aria-label="Layers">
+          <div className="card-head">
+            <button
+              className="icon-btn"
+              onClick={() => setLayersOpen(!layersOpen)}
+              aria-expanded={layersOpen}
+              aria-controls="map-layers"
+              aria-label={layersOpen ? 'Collapse layers' : 'Expand layers'}
+              title={layersOpen ? 'Collapse layers' : 'Expand layers'}
+            >
+              <Icon d={ICONS.layers} size={18} />
+            </button>
+            <div className="card-title">
+              <h2>Layers</h2>
+              <p>{activeView.label} view</p>
+            </div>
+            <button className="icon-btn ghost chevron" onClick={() => setLayersOpen(false)} aria-label="Collapse layers">
+              <Icon d={ICONS.chevronLeft} size={18} />
+            </button>
+          </div>
+          <div ref={layersRef} id="map-layers" className="layer-list" />
+        </section>
 
-          <KpiRow result={result} loading={loading} />
-          {error && <p className="error-msg">Could not load statistics: {error}</p>}
-
-          <div className="grid">
-            <Panel title={`${activeView.label} map`} className="map-card">
-              <div className="map-frame">
-                <MapPanel activeView={activeView} searchRef={searchRef} onViewReady={setView} />
-              </div>
-            </Panel>
-
-            <ChartList result={result} loading={loading} />
+        <aside className={`card stats-card${insightsOpen ? '' : ' collapsed'}`} aria-label="Map insights" aria-busy={loading}>
+          <div className="card-head">
+            <button
+              className="icon-btn insights-toggle"
+              onClick={() => setInsightsOpen(!insightsOpen)}
+              aria-expanded={insightsOpen}
+              aria-controls="insights-content"
+              aria-label={insightsOpen ? 'Collapse insights' : 'Expand insights'}
+              title={insightsOpen ? 'Collapse insights' : 'Expand insights'}
+            >
+              <Icon d={ICONS.gauge} size={18} />
+            </button>
+            <div className="card-title">
+              <h1>{activeView.label} insights</h1>
+              <p>
+                <span className={`live-dot${loading ? ' busy' : ''}`} aria-hidden="true" />
+                {status}
+              </p>
+            </div>
           </div>
 
-          <p className="footnote">
-            {scope === 'extent' ? 'Figures update for the area shown on the map. ' : 'Figures cover the whole region. '}
-            {result?.source && `Source: ${result.source}. `}
-            {DISCLAIMER}
-          </p>
-        </div>
-      </div>
-      {navOpen && <div className="scrim" onClick={() => setNavOpen(false)} />}
+          <div className="insights-content" id="insights-content" hidden={!insightsOpen}>
+            <FilterBar view={view} scope={scope} onScopeChange={setScope} />
+
+            <div className="stats-body">
+              {error && <p className="error-msg" role="alert">Could not load statistics: {error}</p>}
+              {(!error || result) && <KpiRow result={result} loading={loading} />}
+              {(!error || result) && <ChartList result={result} loading={loading} />}
+
+              <div className="note">
+                <Icon d={ICONS.info} size={14} />
+                <p>
+                  {scopeNote}
+                  {result?.source && <span className="source">Source: {result.source}. </span>}
+                  {DISCLAIMER}
+                </p>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </main>
     </div>
   )
 }

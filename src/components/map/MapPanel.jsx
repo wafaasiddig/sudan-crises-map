@@ -4,10 +4,10 @@ import { createMapView } from './createMapView'
 import { snapshotDefaults, applyView } from './layerVisibility'
 import './MapPanel.css'
 
-export default function MapPanel({ activeView, searchRef, onViewReady }) {
+export default function MapPanel({ activeView, layersRef, padding, onViewReady }) {
   const mapDiv = useRef(null)
   const toolsDiv = useRef(null)
-  const panelRefs = { layers: useRef(null), legend: useRef(null), basemap: useRef(null) }
+  const panelRefs = { search: useRef(null), legend: useRef(null), basemap: useRef(null) }
   const state = useRef({})
   const activeViewRef = useRef(activeView)
   activeViewRef.current = activeView
@@ -15,11 +15,12 @@ export default function MapPanel({ activeView, searchRef, onViewReady }) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
+    let disposed = false
     const { map, view, destroy } = createMapView({
       container: mapDiv.current,
       tools: toolsDiv.current,
-      panels: { layers: panelRefs.layers.current, legend: panelRefs.legend.current, basemap: panelRefs.basemap.current },
-      search: searchRef.current,
+      panels: { layers: layersRef.current, legend: panelRefs.legend.current, basemap: panelRefs.basemap.current },
+      search: panelRefs.search.current,
     })
 
     state.current = { map, view }
@@ -27,22 +28,34 @@ export default function MapPanel({ activeView, searchRef, onViewReady }) {
     map
       .load()
       .then(() => {
+        if (disposed) return
         // Apply the tab as soon as the layer tree exists, so the layer list never shows every group.
         state.current.defaults = snapshotDefaults(map.layers)
         applyView(map, activeViewRef.current, state.current.defaults)
       })
-      .then(() => map.loadAll())
-      .catch(() => {}) // a single failing service should not block the rest
+      // The view loads visible layers itself. Loading every hidden service here
+      // blocks statistics and readiness on unrelated, potentially slow layers.
       .then(() => view.when())
       .then(() => {
+        if (disposed) return
         setReady(true)
         onViewReady?.(view)
       })
-      .catch((e) => setError(e.message))
+      .catch((e) => {
+        if (!disposed) setError(e.message)
+      })
 
-    return destroy
+    return () => {
+      disposed = true
+      destroy()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Keep the map centred in the area the floating cards leave visible.
+  useEffect(() => {
+    if (state.current.view) state.current.view.padding = padding
+  }, [padding])
 
   useEffect(() => {
     const { map, defaults } = state.current

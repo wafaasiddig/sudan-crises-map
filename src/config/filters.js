@@ -14,4 +14,5 @@ export const COUNTRIES = [
 export const SCOPES = [
   { id: 'extent', label: 'Map view' },
   { id: 'region', label: 'Whole region' },
+  { id: 'selection', label: 'Selected area' },
 ]

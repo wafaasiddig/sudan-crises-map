@@ -1,10 +1,10 @@
 import { fmt } from '../../utils/format'
 import './Donut.css'
 
-// Single-hue blue palette, alternating dark and light so neighbours stay distinct.
-const PALETTE = ['#0f6cbd', '#9cc4e8', '#2f5597', '#5b9bd5', '#1f4e79', '#bdd7ee', '#7fa7d1', '#dbe8f5']
+// Categorical palette led by the active theme's colour.
+const PALETTE = ['var(--accent)', '#94a3b8', '#f59e0b', '#10b981', '#ec4899', '#6366f1', '#14b8a6', '#f97316', '#64748b']
 
-// Donut with outside percentage labels and the legend underneath.
+// Donut with outside percentage labels and the legend underneath; data rows may carry their own colour.
 export default function Donut({ data }) {
   const clean = data.filter(([, v]) => v > 0)
   const total = clean.reduce((s, [, v]) => s + v, 0)
@@ -12,8 +12,9 @@ export default function Donut({ data }) {
   const R = 44
   const r = 26
   const pt = (rad, ang) => [80 + rad * Math.cos(ang), 60 + rad * Math.sin(ang)]
-  let a0 = -Math.PI / 2
-  const segs = clean.map(([label, v], i) => {
+  const segs = clean.map(([label, v, color], i) => {
+    const preceding = clean.slice(0, i).reduce((sum, [, value]) => sum + value, 0)
+    const a0 = -Math.PI / 2 + (preceding / total) * Math.PI * 2
     const share = v / total
     const a1 = a0 + share * Math.PI * 2 - 1e-6
     const large = a1 - a0 > Math.PI ? 1 : 0
@@ -27,13 +28,12 @@ export default function Donut({ data }) {
       label,
       v,
       share,
-      color: PALETTE[i % PALETTE.length],
+      color: color ?? PALETTE[i % PALETTE.length],
       d: `M${x0} ${y0}A${R} ${R} 0 ${large} 1 ${x1} ${y1}L${x2} ${y2}A${r} ${r} 0 ${large} 0 ${x3} ${y3}Z`,
       lx,
       ly,
       anchor: Math.abs(Math.cos(mid)) < 0.2 ? 'middle' : Math.cos(mid) > 0 ? 'start' : 'end',
     }
-    a0 = a1 + 1e-6
     return seg
   })
   return (
@@ -51,6 +51,12 @@ export default function Donut({ data }) {
               {Math.round(s.share * 100)}%
             </text>
           ))}
+        <text x="80" y="57" textAnchor="middle" className="donut-total">
+          {fmt(total)}
+        </text>
+        <text x="80" y="67" textAnchor="middle" className="donut-total-label">
+          TOTAL
+        </text>
       </svg>
       <ul className="chart-legend">
         {segs.map((s) => (

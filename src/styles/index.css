@@ -1,26 +1,35 @@
 @import '@arcgis/core/assets/esri/themes/light/main.css';
 
 :root {
-  --blue: #0f6cbd;
-  --blue-dark: #0b5394;
-  --blue-light: #9cc4e8;
-  --blue-wash: #eaf3fb;
-  --ink: #252423;
-  --ink-2: #484644;
-  --muted: #605e5c;
-  --line: #d9d9d9;
-  --sidebar: #f3f3f3;
-  --page: #ffffff;
-  font-family: 'Segoe UI', 'Segoe UI Web', 'Inter', system-ui, sans-serif;
-  color: var(--ink);
-  background: var(--page);
-  -webkit-font-smoothing: antialiased;
+  /* The active theme's colour; App sets it per tab. */
+  --accent: #2563eb;
+  --ink: #0f172a;
+  --ink-2: #334155;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --topbar: #0b1628;
+  --radius: 16px;
+  --shadow: 0 1px 2px rgb(15 23 42 / 0.06), 0 8px 24px rgb(15 23 42 / 0.12);
 
-  /* Tint the ArcGIS / Calcite widgets with the dashboard blue. */
-  --calcite-color-brand: var(--blue);
-  --calcite-color-brand-hover: var(--blue-dark);
-  --calcite-color-brand-press: var(--blue-dark);
-  --calcite-font-family: 'Segoe UI', 'Inter', system-ui, sans-serif;
+  /* Older names still used by some components, mapped onto the theme colour. */
+  --blue: var(--accent);
+  --blue-dark: color-mix(in srgb, var(--accent) 80%, black);
+  --blue-wash: color-mix(in srgb, var(--accent) 12%, white);
+
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  color: var(--ink);
+  background: #e9eef4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tint the ArcGIS / Calcite widgets with the active theme colour. */
+.app {
+  --calcite-color-brand: var(--accent);
+  --calcite-color-brand-hover: color-mix(in srgb, var(--accent) 85%, black);
+  --calcite-color-brand-press: color-mix(in srgb, var(--accent) 75%, black);
+  --calcite-font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
 }
 
 * {
@@ -34,14 +43,30 @@ body,
   margin: 0;
 }
 
+.app {
+  min-height: 100dvh;
+}
+
+button,
+select {
+  touch-action: manipulation;
+}
+
 button,
 select {
   font: inherit;
 }
 
 :focus-visible {
-  outline: 2px solid var(--blue);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,77 +1,125 @@
-.kpi-row {
-  flex: none;
+.kpis {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  padding: 4px 8px;
+  gap: 10px;
   transition: opacity 0.2s;
 }
 
-.kpi-row.is-loading {
-  opacity: 0.55;
+.kpis.is-loading {
+  opacity: 0.5;
+}
+
+.kpi-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 18px 16px;
+  border-radius: 14px;
+  color: #fff;
+  background:
+    radial-gradient(120% 140% at 100% 0%, rgb(255 255 255 / 0.22), transparent 55%),
+    linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 60%, #0b1628));
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--accent) 30%, transparent);
+  animation: fade-in 0.35s ease;
+}
+
+.kpi-hero-text {
+  min-width: 0;
+}
+
+.kpi-hero .kpi-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.kpi-hero .kpi-value {
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-hero-icon {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.18);
+}
+
+/* Image icons (cluster PNGs) sit on a white chip so they stay legible on the gradient. */
+.kpi-hero-icon img {
+  padding: 4px;
+  border-radius: 8px;
+  background: #fff;
+  width: 36px;
+  height: 36px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .kpi {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   min-width: 0;
 }
 
 .kpi-icon {
-  flex: none;
-  width: 64px;
-  height: 64px;
-  display: grid;
+  display: inline-grid;
   place-items: center;
-  color: var(--blue);
-  background: var(--blue-wash);
-  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, white);
 }
 
-.kpi-text {
-  min-width: 0;
-  text-align: center;
+.kpi-icon img {
+  width: 22px;
+  height: 22px;
 }
 
-.kpi-value {
-  font-size: 30px;
-  font-weight: 600;
-  line-height: 1.15;
-  color: var(--blue);
+.kpi .kpi-value {
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 
-.kpi-label {
-  font-size: 14px;
+.kpi .kpi-label {
+  font-size: 12px;
   color: var(--muted);
   margin-top: 2px;
 }
 
-@media (max-width: 1200px) {
-  .kpi-value {
-    font-size: 24px;
-  }
-
-  .kpi-icon {
-    width: 52px;
-    height: 52px;
-  }
+.sk-hero {
+  display: block;
+  height: 96px;
+  border-radius: 14px;
 }
 
-@media (max-width: 960px) {
-  .kpi-row {
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
+.sk-kpi {
+  display: block;
+  height: 92px;
+  border-radius: 12px;
+}
 
-  .kpi {
-    justify-content: flex-start;
-  }
-
-  .kpi-text {
-    text-align: left;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
   }
 }

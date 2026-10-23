@@ -1,0 +1,66 @@
+.stacked {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.stacked-rows {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  gap: 8px;
+  min-height: 0;
+}
+
+.stacked-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Long names ("Central African Republic") wrap onto two lines instead of being cut off. */
+.stacked-label {
+  flex: none;
+  width: 92px;
+  font-size: 12px;
+  line-height: 1.2;
+  color: var(--ink);
+  text-align: right;
+}
+
+.stacked-track {
+  flex: 1;
+  display: flex;
+  height: 18px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.stacked-seg {
+  display: grid;
+  place-items: center;
+  min-width: 1px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width 0.4s ease;
+}
+
+.stacked-row:hover .stacked-seg {
+  filter: brightness(0.92);
+}
+
+.stacked .chart-legend {
+  font-size: 12px;
+  gap: 6px 14px;
+}
+
+.stacked .swatch {
+  width: 11px;
+  height: 11px;
+}

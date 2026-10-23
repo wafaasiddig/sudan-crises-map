@@ -1,22 +1,53 @@
 import Icon from '../common/Icon'
-import { ICONS } from '../common/icons'
+import { ICONS, IMAGES } from '../common/icons'
 import '../common/Skeleton.css'
 import './KpiRow.css'
 
-// Three headline figures; shows skeletons until the first result arrives.
+function KpiIcon({ name, size }) {
+  if (IMAGES[name]) return <img src={IMAGES[name]} alt="" width={size} height={size} />
+  if (name) return <Icon d={ICONS[name]} size={size} />
+  return null
+}
+
+// Headline figures: the first as a large coloured card, the rest in a grid; skeletons until the first result.
 export default function KpiRow({ result, loading }) {
-  const kpis = result?.kpis ?? [{}, {}, {}]
-  return (
-    <div className={`kpi-row${loading && result ? ' is-loading' : ''}`}>
-      {kpis.map((k, i) => (
-        <div className="kpi" key={k.label || i}>
-          <span className="kpi-icon">{k.icon ? <Icon d={ICONS[k.icon]} size={40} /> : <span className="sk sk-icon" />}</span>
-          <div className="kpi-text">
-            <div className="kpi-value">{k.value ?? <span className="sk sk-num" />}</div>
-            <div className="kpi-label">{k.label ?? <span className="sk sk-text" />}</div>
-          </div>
+  if (!result) {
+    return (
+      <div className="kpis">
+        <div className="sk sk-hero" />
+        <div className="kpi-grid">
+          <div className="sk sk-kpi" />
+          <div className="sk sk-kpi" />
         </div>
-      ))}
+      </div>
+    )
+  }
+
+  const [hero, ...rest] = result.kpis
+  return (
+    <div className={`kpis${loading ? ' is-loading' : ''}`}>
+      <div className="kpi-hero">
+        <div className="kpi-hero-text">
+          <div className="kpi-label">{hero.label}</div>
+          <div className="kpi-value">{hero.value}</div>
+        </div>
+        <span className="kpi-hero-icon">
+          <KpiIcon name={hero.icon} size={28} />
+        </span>
+      </div>
+      {rest.length > 0 && (
+        <div className="kpi-grid">
+          {rest.map((k) => (
+            <div className="kpi" key={k.label}>
+              <span className="kpi-icon">
+                <KpiIcon name={k.icon} size={18} />
+              </span>
+              <div className="kpi-value">{k.value}</div>
+              <div className="kpi-label">{k.label}</div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

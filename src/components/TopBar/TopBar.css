@@ -5,8 +5,9 @@
   align-items: center;
   gap: 24px;
   padding: 10px 20px;
-  background: var(--topbar);
-  color: #e2e8f0;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 2px 8px rgb(15 23 42 / 0.05);
   position: relative;
   z-index: 5;
 }
@@ -36,13 +37,13 @@
   font-weight: 700;
   font-size: 15px;
   letter-spacing: -0.01em;
-  color: #fff;
+  color: var(--ink);
   white-space: nowrap;
 }
 
 .brand-sub {
   font-size: 11.5px;
-  color: #94a3b8;
+  color: var(--muted);
   white-space: nowrap;
 }
 
@@ -52,14 +53,17 @@
   gap: 4px;
   padding: 4px;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.06);
-  border: 1px solid rgb(255 255 255 / 0.08);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
   overflow-x: auto;
   scrollbar-width: none;
   max-width: 100%;
 }
 
 .tab {
+  position: relative;
+  isolation: isolate;
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 7px;
@@ -67,29 +71,53 @@
   border-radius: 999px;
   padding: 8px 16px;
   background: transparent;
-  color: #cbd5e1;
+  color: var(--ink-2);
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  animation: topbar-tab-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) var(--tab-delay, 0ms) both;
+}
+
+@keyframes topbar-tab-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tab:focus-visible {
+  animation: none;
+  outline-offset: -2px;
 }
 
 .tab svg {
   color: var(--tab-accent);
-  filter: brightness(1.35);
 }
 
 .tab:hover {
-  background: rgb(255 255 255 / 0.08);
-  color: #fff;
+  background: var(--line);
+  color: var(--ink);
 }
 
 .tab.active {
-  background: var(--tab-accent);
+  background: transparent;
   color: #fff;
-  font-weight: 600;
-  box-shadow: 0 4px 14px color-mix(in srgb, var(--tab-accent) 45%, transparent);
+}
+
+.tab-highlight {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--tab-accent) 22%, transparent);
 }
 
 .tab.active svg {
@@ -103,7 +131,7 @@
   gap: 8px;
   max-width: 260px;
   font-size: 11.5px;
-  color: #94a3b8;
+  color: var(--muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

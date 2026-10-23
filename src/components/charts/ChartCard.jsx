@@ -4,7 +4,6 @@ import Columns from './Columns'
 import StackedBars from './StackedBars'
 import '../common/Skeleton.css'
 import './ChartCard.css'
-
 export default function ChartCard({ chart, loading }) {
   return (
     <Panel title={chart.title} className="chart-card" loading={loading}>

@@ -1,10 +1,14 @@
+import { useId } from 'react'
+import { LayoutGroup, motion, useReducedMotion } from 'framer-motion'
 import Logo from '../common/Logo'
 import Icon from '../common/Icon'
 import { VIEWS, DATA_SOURCES } from '../../config/views'
 import './TopBar.css'
 
-// Dark header: brand, the five themes as pill tabs, and the data sources.
+// Light header: brand, the five themes as pill tabs, and the data sources.
 export default function TopBar({ activeView, onSelect }) {
+  const tabsId = useId()
+  const reduceMotion = useReducedMotion()
   const navigateThemes = (event) => {
     const index = VIEWS.findIndex((view) => view.id === activeView.id)
     const next = event.key === 'ArrowRight' ? (index + 1) % VIEWS.length
@@ -25,8 +29,9 @@ export default function TopBar({ activeView, onSelect }) {
         </div>
       </div>
 
-      <nav className="tabs" role="tablist" aria-label="Map themes" onKeyDown={navigateThemes}>
-        {VIEWS.map((v) => {
+      <LayoutGroup id={tabsId}>
+      <motion.nav layoutScroll className="tabs" role="tablist" aria-label="Map themes" onKeyDown={navigateThemes}>
+        {VIEWS.map((v, index) => {
           const active = v.id === activeView.id
           return (
             <button
@@ -36,15 +41,28 @@ export default function TopBar({ activeView, onSelect }) {
               tabIndex={active ? 0 : -1}
               aria-controls="map-workspace"
               className={`tab${active ? ' active' : ''}`}
-              style={{ '--tab-accent': v.accent }}
+              style={{ '--tab-accent': v.accent, '--tab-delay': `${index * 60}ms` }}
               onClick={() => onSelect(v)}
             >
+              {active && (
+                <motion.span
+                  className="tab-highlight"
+                  layoutId="active-tab"
+                  aria-hidden="true"
+                  initial={false}
+                  animate={{ backgroundColor: v.accent }}
+                  transition={reduceMotion
+                    ? { duration: 0 }
+                    : { type: 'spring', stiffness: 420, damping: 36 }}
+                />
+              )}
               <Icon d={v.icon} size={16} />
               <span>{v.label}</span>
             </button>
           )
         })}
-      </nav>
+      </motion.nav>
+      </LayoutGroup>
 
       <div className="topbar-meta" title={DATA_SOURCES}>
         <span className="live-dot" aria-hidden="true" />

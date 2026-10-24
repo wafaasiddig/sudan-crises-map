@@ -1,0 +1,90 @@
+/* Full-width lane between the side cards; only the strip itself takes clicks. */
+.country-bar {
+  position: absolute;
+  bottom: 16px;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+.country-strip {
+  display: flex;
+  gap: 4px;
+  max-width: 100%;
+  padding: 6px;
+  overflow-x: auto;
+  border-radius: 14px;
+  background: var(--surface-2);
+  box-shadow: var(--shadow);
+  pointer-events: auto;
+}
+
+.country-tile {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  width: 54px;
+  padding: 5px 4px 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.country-tile:hover {
+  border-color: #cbd5e1;
+}
+
+.country-tile.on {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--blue-wash);
+}
+
+.country-tile:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.country-tile img {
+  width: 30px;
+  height: 20px;
+  object-fit: cover;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgb(15 23 42 / 0.08);
+  pointer-events: none;
+}
+
+.country-name {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--ink-2);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.country-tile.on .country-name {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Small screens: the stage stacks, so the strip sits in the flow under the map. */
+@media (max-width: 960px) {
+  .country-bar {
+    position: relative;
+    bottom: auto;
+    padding: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  .country-tile {
+    min-height: 44px;
+  }
+}

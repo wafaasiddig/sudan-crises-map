@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import TopBar from './components/TopBar/TopBar'
 import FilterBar from './components/FilterBar/FilterBar'
+import CountryBar from './components/CountryBar/CountryBar'
 import KpiRow from './components/KpiRow/KpiRow'
 import ChartList from './components/charts/ChartList'
 import MapPanel from './components/map/MapPanel'
@@ -29,7 +30,7 @@ export default function App() {
   const [activeView, setActiveView] = useState(VIEWS[0])
   const [view, setView] = useState(null)
   const [scope, setScope] = useState('extent')
-  const [layersOpen, setLayersOpen] = useState(true)
+  const [layersOpen, setLayersOpen] = useState(false)
   const [insightsOpen, setInsightsOpen] = useState(true)
   const isDesktop = useMedia(DESKTOP)
   const layersRef = useRef(null)
@@ -62,6 +63,7 @@ export default function App() {
 
       <main className="stage" id="map-workspace" aria-label={`${activeView.label} map workspace`}>
         <MapPanel activeView={activeView} layersRef={layersRef} padding={padding} onViewReady={setView} />
+        <CountryBar view={view} inset={padding} />
 
         <section className={`card layers-card${layersOpen ? '' : ' collapsed'}`} aria-label="Layers">
           <div className="card-head">
@@ -108,7 +110,7 @@ export default function App() {
           </div>
 
           <div className="insights-content" id="insights-content" hidden={!insightsOpen}>
-            <FilterBar view={view} scope={scope} onScopeChange={setScope} />
+            <FilterBar scope={scope} onScopeChange={setScope} />
 
             <div className="stats-body">
               {error && <p className="error-msg" role="alert">Could not load statistics: {error}</p>}

@@ -10,6 +10,12 @@ Wafaa knows **Power BI** very well and is newer to React / JavaScript / ArcGIS.
 Answer the question in `$ARGUMENTS` so it makes sense to someone who thinks in Power BI terms.
 If no question was given, ask what they want explained.
 
+## Brief mode
+
+If the request says **"brief"** (for example when `/wafaa-sudan` asks for a plan before
+building something), answer with only: 🧠 In one sentence, 📊 one-line Power BI analogy, a
+📁 files table (file · new/edit · what changes), and ⚠️ gotchas if there are any. No code snippets.
+
 ## How to answer
 
 1. **Investigate first.** Read the actual files involved before explaining. Never guess how the code works.

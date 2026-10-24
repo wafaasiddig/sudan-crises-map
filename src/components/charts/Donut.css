@@ -6,17 +6,25 @@
   justify-content: center;
   gap: 8px;
   min-height: 0;
+  min-width: 0;
 }
 
-.donut-svg {
+.donut-chart {
+  position: relative;
   width: 100%;
   max-width: 260px;
-  max-height: 170px;
+  height: 170px;
+  flex: none;
 }
 
-.donut-label {
-  font-size: 8.5px;
-  fill: var(--ink-2);
+.donut-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 .chart-legend {
@@ -46,13 +54,21 @@
 }
 
 .donut-total {
-  font-size: 11px;
+  font-size: 14px;
   font-weight: 700;
-  fill: var(--ink);
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.donut-share {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
 }
 
 .donut-total-label {
-  font-size: 5.5px;
+  font-size: 9px;
   letter-spacing: 0.08em;
-  fill: var(--muted);
+  color: var(--muted);
 }

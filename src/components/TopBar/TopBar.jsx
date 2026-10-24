@@ -25,7 +25,6 @@ export default function TopBar({ activeView, onSelect }) {
         <Logo size={32} />
         <div>
           <div className="brand-title">Sudan Regional Crisis</div>
-          <div className="brand-sub">Regional map · 8 countries</div>
         </div>
       </div>
 

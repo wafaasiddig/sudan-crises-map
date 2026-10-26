@@ -97,13 +97,21 @@
   outline-offset: -2px;
 }
 
+/* Unselected icons stay grey; the theme colour shows on hover, white when selected. */
 .tab svg {
-  color: var(--tab-accent);
+  flex: none;
+  color: var(--muted);
+  opacity: 0.75;
 }
 
 .tab:hover {
   background: var(--line);
   color: var(--ink);
+}
+
+.tab:hover svg {
+  color: var(--tab-accent);
+  opacity: 1;
 }
 
 .tab.active {
@@ -122,6 +130,7 @@
 
 .tab.active svg {
   color: #fff;
+  opacity: 1;
   filter: none;
 }
 

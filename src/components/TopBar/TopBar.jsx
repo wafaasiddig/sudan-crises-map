@@ -55,7 +55,7 @@ export default function TopBar({ activeView, onSelect }) {
                     : { type: 'spring', stiffness: 420, damping: 36 }}
                 />
               )}
-              <Icon d={v.icon} size={18} />
+              <Icon d={v.icon} size={18} line />
               <span>{v.label}</span>
             </button>
           )

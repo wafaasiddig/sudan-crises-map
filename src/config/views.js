@@ -10,7 +10,7 @@ export const VIEWS = [
   {
     id: 'population',
     accent: '#2563eb',
-    icon: ICONS.people,
+    icon: ICONS.linePeople,
     label: 'Population',
     groups: [L.population],
     on: null,
@@ -18,7 +18,7 @@ export const VIEWS = [
   {
     id: 'security',
     accent: '#dc2626',
-    icon: ICONS.shieldSolid,
+    icon: ICONS.lineShield,
     label: 'Security',
     groups: [L.security, L.population],
     on: ['19d1af95f74-layer-41', POP.routes],
@@ -26,7 +26,7 @@ export const VIEWS = [
   {
     id: 'services',
     accent: '#7c3aed',
-    icon: ICONS.medical,
+    icon: ICONS.lineMedical,
     label: 'Services',
     groups: [L.services, L.population],
     on: ['19cfe653521-layer-41', '19cf7c1edc1-layer-41', POP.routes],
@@ -34,7 +34,7 @@ export const VIEWS = [
   {
     id: 'climate',
     accent: '#0d9488',
-    icon: ICONS.water,
+    icon: ICONS.lineDrop,
     label: 'Climate hazards',
     groups: [L.climate, L.population],
     on: ['19d8964ac43-layer-51', '19cdf7943f8-layer-34', POP.routes],
@@ -42,7 +42,7 @@ export const VIEWS = [
   {
     id: 'energy',
     accent: '#d97706',
-    icon: ICONS.bolt,
+    icon: ICONS.lineBolt,
     label: 'Energy',
     groups: [L.energy, L.population],
     // The electricity grid remains available in Layers, initially unchecked.

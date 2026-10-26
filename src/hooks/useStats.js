@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils'
 import { LOADERS } from '../services/statsLoaders'
 
-/** Loads the active theme's statistics, for the map extent, a selected area or the whole region. */
+/** Loads the active theme's statistics for the map extent or a selected admin. */
 export function useStats(view, activeView, scope, area) {
   const [state, setState] = useState({ result: null, loading: true, error: null })
 
@@ -17,7 +17,7 @@ export function useStats(view, activeView, scope, area) {
       timer = setTimeout(async () => {
         setState((s) => ({ ...s, loading: true, error: null }))
         try {
-          // Until a place is clicked, "Selected area" shows the whole region.
+          // Until an admin is clicked, "Selected Admin" shows the whole region.
           const geometry = scope === 'extent' ? view.extent : scope === 'selection' ? (area?.geometry ?? null) : null
           const result = await LOADERS[activeView.id](view, geometry)
           if (!cancelled && request === latest) setState({ result, loading: false, error: null })

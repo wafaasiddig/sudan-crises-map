@@ -28,7 +28,7 @@ export const POP = {
   crossings: '196219a7c1b-layer-72',
 }
 
-// Admin boundary layers a map click can select for "Selected area" statistics, most detailed first.
+// Admin boundary layers a map click can select for "Selected Admin" statistics, most detailed first.
 export const ADMIN_AREAS = ['19d0c85bc90-layer-45', '63011228fcb344f6978475c67e6fcfd1']
 
 // Layers that are always drawn regardless of tab.

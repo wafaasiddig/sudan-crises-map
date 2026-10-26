@@ -34,6 +34,10 @@ export default function MapPanel({ activeView, layersRef, padding, onViewReady }
         // The source grid covers all Africa; restrict it to our target countries.
         const grid = map.findLayerById(ELECTRIC_GRID_ID)
         if (grid) {
+          grid.visible = false
+          // Allow the grid at country and whole-region zoom levels when enabled.
+          grid.minScale = 0
+          grid.maxScale = 0
           const names = COUNTRIES.map(({ name }) => `'${name.replaceAll("'", "''")}'`).join(', ')
           const regionFilter = `adm0_name IN (${names})`
           grid.definitionExpression = grid.definitionExpression

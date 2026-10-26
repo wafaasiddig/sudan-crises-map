@@ -1,4 +1,4 @@
-import { ELECTRIC_GRID_ID, L, POP } from './webmap'
+import { L, POP } from './webmap'
 import { ICONS } from '../components/common/icons'
 
 /**
@@ -45,7 +45,8 @@ export const VIEWS = [
     icon: ICONS.bolt,
     label: 'Energy',
     groups: [L.energy, L.population],
-    on: ['19d5358ba97-layer-42', ELECTRIC_GRID_ID, POP.poc],
+    // The electricity grid remains available in Layers, initially unchecked.
+    on: ['19d5358ba97-layer-42', POP.poc],
   },
 ]
 

@@ -21,6 +21,5 @@ export const flagUrl = (code) => `https://flagcdn.com/w80/${code}.png`
 
 export const SCOPES = [
   { id: 'extent', label: 'Map view' },
-  { id: 'region', label: 'Whole region' },
-  { id: 'selection', label: 'Selected area' },
+  { id: 'selection', label: 'Selected Admin' },
 ]

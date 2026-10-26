@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import TopBar from './components/TopBar/TopBar'
-import FilterBar from './components/FilterBar/FilterBar'
 import CountryBar from './components/CountryBar/CountryBar'
 import KpiRow from './components/KpiRow/KpiRow'
 import ChartList from './components/charts/ChartList'
@@ -29,33 +28,27 @@ function useMedia(query) {
 export default function App() {
   const [activeView, setActiveView] = useState(VIEWS[0])
   const [view, setView] = useState(null)
-  const [scope, setScope] = useState('extent')
   const [layersOpen, setLayersOpen] = useState(false)
   const [insightsOpen, setInsightsOpen] = useState(true)
   const isDesktop = useMedia(DESKTOP)
   const layersRef = useRef(null)
-  const area = useSelectedArea(view, scope === 'selection')
+  const { area, clearSelection } = useSelectedArea(view, true)
+  const scope = area ? 'selection' : 'extent'
   const { result, loading, error } = useStats(view, activeView, scope, area)
 
   // Space taken by the floating cards, so the map centres in what's left visible.
   const padding = isDesktop ? { left: layersOpen ? 312 : 76, right: insightsOpen ? 404 : 76, top: 0, bottom: 0 } : NO_PADDING
 
   const scopeNote =
-    scope === 'extent'
-      ? 'Figures update for the area shown on the map. '
-      : scope === 'selection'
-        ? area
-          ? `Figures cover ${area.name}; click another place on the map to change it. `
-          : 'Click a place on the map to see its figures; until then they cover the whole region. '
-        : 'Figures cover the whole region. '
+    area
+      ? `Figures cover ${area.name}; click another admin on the map to change it. `
+      : 'Figures update for the area shown on the map. Click an admin to see its figures. '
 
   const status = loading
     ? 'Updating…'
     : scope === 'extent'
       ? 'Live for the current map extent'
-      : scope === 'selection' && area
-        ? `Selected area: ${area.name}`
-        : 'Whole region'
+      : 'Statistics for the selected admin'
 
   return (
     <div className="app" style={{ '--accent': activeView.accent }}>
@@ -110,11 +103,13 @@ export default function App() {
           </div>
 
           <div className="insights-content" id="insights-content" hidden={!insightsOpen}>
-            <FilterBar scope={scope} onScopeChange={setScope} />
-
             <div className="stats-body">
               {error && <p className="error-msg" role="alert">Could not load statistics: {error}</p>}
               {(!error || result) && <KpiRow result={result} loading={loading} />}
+              <div className="stats-scope">
+                <span aria-live="polite">For: {area ? area.name : 'Map view'}</span>
+                {area && <button type="button" className="reset-scope" onClick={clearSelection}>Back to map view</button>}
+              </div>
               {(!error || result) && <ChartList result={result} loading={loading} />}
 
               <div className="note">

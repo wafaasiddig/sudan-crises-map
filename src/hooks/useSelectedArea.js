@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import Graphic from '@arcgis/core/Graphic'
 import { ADMIN_AREAS } from '../config/webmap'
 
@@ -28,22 +28,26 @@ async function findArea(view, point) {
 /** While enabled, a map click selects the admin area under it and outlines it on the map. */
 export function useSelectedArea(view, enabled) {
   const [area, setArea] = useState(null)
+  const latest = useRef(0)
+  const clearSelection = useCallback(() => {
+    latest.current += 1
+    setArea(null)
+  }, [])
 
   useEffect(() => {
     if (!view || !enabled) return
-    let latest = 0
     const handle = view.on('click', async (e) => {
-      const id = ++latest
+      const id = ++latest.current
       try {
         const found = await findArea(view, e.mapPoint)
         // Ignore clicks outside the covered countries and answers to an older click.
-        if (found && id === latest) setArea(found)
+        if (found && id === latest.current) setArea(found)
       } catch {
         // A failing boundary service leaves the previous selection in place.
       }
     })
     return () => {
-      latest = -1
+      latest.current += 1
       handle.remove()
     }
   }, [view, enabled])
@@ -55,5 +59,5 @@ export function useSelectedArea(view, enabled) {
     return () => view.graphics.remove(graphic)
   }, [view, enabled, area])
 
-  return area
+  return { area, clearSelection }
 }

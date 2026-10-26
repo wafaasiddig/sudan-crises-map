@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import MapTools from './MapTools'
 import { createMapView } from './createMapView'
 import { snapshotDefaults, applyView } from './layerVisibility'
+import { COUNTRIES } from '../../config/filters'
+import { ELECTRIC_GRID_ID } from '../../config/webmap'
 import './MapPanel.css'
 
 export default function MapPanel({ activeView, layersRef, padding, onViewReady }) {
@@ -29,6 +31,15 @@ export default function MapPanel({ activeView, layersRef, padding, onViewReady }
       .load()
       .then(() => {
         if (disposed) return
+        // The source grid covers all Africa; restrict it to our target countries.
+        const grid = map.findLayerById(ELECTRIC_GRID_ID)
+        if (grid) {
+          const names = COUNTRIES.map(({ name }) => `'${name.replaceAll("'", "''")}'`).join(', ')
+          const regionFilter = `adm0_name IN (${names})`
+          grid.definitionExpression = grid.definitionExpression
+            ? `(${grid.definitionExpression}) AND (${regionFilter})`
+            : regionFilter
+        }
         // Apply the tab as soon as the layer tree exists, so the layer list never shows every group.
         state.current.defaults = snapshotDefaults(map.layers)
         applyView(map, activeViewRef.current, state.current.defaults)

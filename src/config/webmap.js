@@ -2,6 +2,8 @@
 export const PORTAL_URL = 'https://unhcr.maps.arcgis.com'
 export const WEBMAP_ID = 'a6ac17228c4b47529f319572be4480b4'
 
+export const ELECTRIC_GRID_ID = '19d538ea994-layer-47'
+
 // Top-level group / layer ids in the web map.
 export const L = {
   hidden: '19d5366415f-layer-46',

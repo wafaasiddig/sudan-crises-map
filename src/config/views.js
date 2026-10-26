@@ -1,4 +1,4 @@
-import { L, POP } from './webmap'
+import { ELECTRIC_GRID_ID, L, POP } from './webmap'
 import { ICONS } from '../components/common/icons'
 
 /**
@@ -45,7 +45,7 @@ export const VIEWS = [
     icon: ICONS.bolt,
     label: 'Energy',
     groups: [L.energy, L.population],
-    on: ['19d5358ba97-layer-42', '19d538ea994-layer-47', POP.poc],
+    on: ['19d5358ba97-layer-42', ELECTRIC_GRID_ID, POP.poc],
   },
 ]
 

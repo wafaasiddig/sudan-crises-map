@@ -1,149 +1,17 @@
-import { queryStats as stats } from './statsQuery'
-import { fmt, pct, sum } from '../utils/format'
-
-const AGE = [
-  ['Children_total', 'Children (0–17)'],
-  ['Adult_total', 'Adults (18–59)'],
-  ['Elderly_total', 'Elderly (60+)'],
-]
-
-// Health facility types with the original app's chart colours (they match the map symbols).
-const OTHER = 'other'
-const AMENITY = [
-  ['clinic', 'Clinic', '#fb8c00'],
-  ['health_post', 'Health post', '#77b484'],
-  ['hospital', 'Hospital', '#b71c1c'],
-  [OTHER, 'Undefined', '#d6d6d6'],
-]
+import population from './loaders/population'
+import security from './loaders/security'
+import services from './loaders/services'
+import climate from './loaders/climate'
+import energy from './loaders/energy'
 
 /**
- * One loader per theme (keyed by view id). Each returns
- *  kpis   – three { icon, value, label } tiles (icon is a key of ICONS)
- *  charts – usually a donut and a columns chart as { type, title, data: [[label, value]] };
- *           a 'stackedBars' chart also takes series (see components/charts/StackedBars)
- *  source – optional attribution for the footnote
+ * One loader per theme (keyed by view id), each in its own file under ./loaders.
+ * A loader is called as (view, geometry) and returns
+ *  kpis    – three { icon, value, label } tiles (icon is a key of ICONS); Security has none
+ *  charts  – usually a donut and a columns chart as { type, title, data: [[label, value]] };
+ *            a 'stackedBars' chart also takes series (see components/charts/StackedBars),
+ *            a 'timeline' chart takes data: [[ms, value]] and step (see components/charts/Timeline)
+ *  source  – optional attribution for the footnote
+ *  summary – optional one-line description of what the figures cover
  */
-export const LOADERS = {
-  async population(view, g) {
-    const [row = {}] = await stats(
-      view,
-      'Loc_UNHCR_enriched',
-      [
-        ['sum', 'total', 'total'],
-        ['sum', 'F_total', 'female'],
-        ['sum', 'M_total', 'male'],
-        ['count', 'OBJECTID', 'n'],
-        ...AGE.map(([f]) => ['sum', f, f]),
-      ],
-      null,
-      g,
-    )
-    return {
-      kpis: [
-        { icon: 'people', value: fmt(row.total), label: 'Displaced & returnee population' },
-        { icon: 'pin', value: fmt(row.n), label: 'Reporting locations' },
-        { icon: 'female', value: pct(row.female, row.female + row.male), label: 'Female share' },
-      ],
-      charts: [
-        { type: 'donut', title: '% of population by gender', data: [['Female', row.female], ['Male', row.male]] },
-        { type: 'columns', title: 'Population by age group', data: AGE.map(([f, label]) => [label, row[f]]) },
-      ],
-    }
-  },
-  async security(view, g) {
-    const rows = await stats(view, 'Violent events', [['count', 'OBJECTID', 'events'], ['sum', 'fatalities', 'fatalities']], 'event_type', g)
-    const events = sum(rows, 'events')
-    const civilians = rows.find((r) => r.event_type === 'Violence against civilians')?.events || 0
-    return {
-      kpis: [
-        { icon: 'alert', value: fmt(events), label: 'Violent events (12 months)' },
-        { icon: 'cross', value: fmt(sum(rows, 'fatalities')), label: 'Reported fatalities' },
-        { icon: 'people', value: pct(civilians, events), label: 'Events targeting civilians' },
-      ],
-      charts: [
-        { type: 'donut', title: '% of events by type', data: rows.map((r) => [r.event_type, r.events]) },
-        {
-          type: 'columns',
-          title: 'Fatalities by event type',
-          data: rows.map((r) => [r.event_type, r.fatalities]).sort((a, b) => b[1] - a[1]),
-        },
-      ],
-      source: 'ACLED, rolling 365 days',
-    }
-  },
-  async services(view, g) {
-    const [health, [schools = {}]] = await Promise.all([
-      stats(view, 'Healthsites', [['count', 'ObjectId', 'n']], ['countryName', 'amenity'], g),
-      stats(view, 'Schools (JRC, Giga, OSM)', [['count', 'ObjectId', 'n']], null, g),
-    ])
-    const facilities = sum(health, 'n')
-    const byCountry = {}
-    const byType = {}
-    health.forEach((r) => {
-      const values = (byCountry[r.countryName || 'Unknown'] ??= {})
-      const key = AMENITY.some(([k]) => k === r.amenity) ? r.amenity : OTHER
-      values[key] = (values[key] || 0) + r.n
-      byType[key] = (byType[key] || 0) + r.n
-    })
-    // Like the original app, the Services tab has a single chart.
-    return {
-      kpis: [
-        { icon: 'health', value: fmt(facilities), label: 'Health facilities' },
-        { icon: 'education', value: fmt(schools.n), label: 'Schools' },
-        { icon: 'flag', value: fmt(Object.keys(byCountry).length), label: 'Countries covered' },
-      ],
-      charts: [
-        {
-          type: 'stackedBars',
-          title: 'Healthsites by country and type',
-          series: AMENITY.filter(([k]) => byType[k]),
-          data: Object.entries(byCountry),
-        },
-      ],
-      source: 'healthsites.io (OSM); JRC, Giga, OSM',
-    }
-  },
-  async climate(view, g) {
-    const rows = await stats(
-      view,
-      'Displaced & returnee locations in flood zones',
-      [['count', 'OBJECTID', 'n'], ['sum', 'total', 'pop']],
-      'Flood_risk',
-      g,
-    )
-    rows.sort((a, b) => a.Flood_risk - b.Flood_risk)
-    const n = sum(rows, 'n')
-    const level = (r) => ['', 'Low', 'Medium', 'High', 'Severe'][r.Flood_risk] || String(r.Flood_risk)
-    return {
-      kpis: [
-        { icon: 'people', value: fmt(sum(rows, 'pop')), label: 'Population in flood zones' },
-        { icon: 'water', value: fmt(n), label: 'Locations in flood zones' },
-        { icon: 'alert', value: pct(sum(rows.filter((r) => r.Flood_risk >= 3), 'n'), n), label: 'At high or severe risk' },
-      ],
-      charts: [
-        { type: 'donut', title: '% of population by flood risk', data: rows.map((r) => [level(r), r.pop]) },
-        { type: 'columns', title: 'Locations by flood risk (100-year RP)', data: rows.map((r) => [level(r), r.n]) },
-      ],
-    }
-  },
-  async energy(view, g) {
-    const rows = await stats(view, 'Power Plants', [['sum', 'Capacity__MW_', 'mw'], ['count', 'OBJECTID', 'n']], 'Type', g)
-    const mw = sum(rows, 'mw')
-    const renewable = sum(
-      rows.filter((r) => ['solar', 'wind', 'hydropower', 'geothermal', 'bioenergy'].includes(r.Type)),
-      'mw',
-    )
-    return {
-      kpis: [
-        { icon: 'bolt', value: fmt(sum(rows, 'n')), label: 'Power plants' },
-        { icon: 'gauge', value: `${fmt(mw)} MW`, label: 'Installed capacity' },
-        { icon: 'leaf', value: pct(renewable, mw), label: 'Renewable share of capacity' },
-      ],
-      charts: [
-        { type: 'donut', title: '% of capacity by type of energy', data: rows.map((r) => [r.Type, r.mw]) },
-        { type: 'columns', title: 'Power plants by type', data: rows.map((r) => [r.Type, r.n]).sort((a, b) => b[1] - a[1]) },
-      ],
-      source: 'Global Energy Monitor',
-    }
-  },
-}
+export const LOADERS = { population, security, services, climate, energy }

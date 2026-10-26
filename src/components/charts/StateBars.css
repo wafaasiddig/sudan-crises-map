@@ -1,0 +1,58 @@
+/* Colours follow ACLED Explorer: dark blue for events, red (the Security accent) for fatalities. */
+.state-bars.is-events {
+  --accent: #1e3a5f;
+}
+
+.state-switch {
+  display: flex;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.state-switch button {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 2px 4px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.state-switch button:hover:not(.on) {
+  color: var(--ink-2);
+}
+
+.state-switch-events.on {
+  color: #1e3a5f;
+}
+
+.state-switch-fatalities.on {
+  color: var(--accent);
+}
+
+.state-switch-value {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+
+.state-switch-label {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.state-switch-line {
+  position: absolute;
+  left: 20%;
+  right: 20%;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}

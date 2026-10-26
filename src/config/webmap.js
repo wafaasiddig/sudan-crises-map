@@ -3,6 +3,10 @@ export const PORTAL_URL = 'https://unhcr.maps.arcgis.com'
 export const WEBMAP_ID = 'a6ac17228c4b47529f319572be4480b4'
 
 export const ELECTRIC_GRID_ID = '19d538ea994-layer-47'
+// ACLED "Violent events" (clustered) in the Security group.
+export const VIOLENT_EVENTS_ID = '19d1af95f74-layer-41'
+// ACLED layers the Security date filter applies to (events and the binned fatalities grid).
+export const EVENT_LAYERS = [VIOLENT_EVENTS_ID, '19d4e85d45b-layer-43']
 
 // Top-level group / layer ids in the web map.
 export const L = {

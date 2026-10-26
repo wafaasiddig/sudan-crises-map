@@ -1,0 +1,26 @@
+/* Centred above the pointer. Uses `translate`, since framer-motion owns `transform`. */
+.hover-tooltip {
+  position: absolute;
+  z-index: 5;
+  translate: -50% calc(-100% - 14px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.hover-tooltip strong {
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.hover-tooltip span {
+  color: var(--muted);
+  font-size: 13px;
+}

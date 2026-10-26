@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import MapTools from './MapTools'
+import HoverTooltip from './HoverTooltip/HoverTooltip'
+import { useHoverInfo } from '../../hooks/useHoverInfo'
 import { createMapView } from './createMapView'
 import { snapshotDefaults, applyView } from './layerVisibility'
 import { COUNTRIES } from '../../config/filters'
@@ -15,6 +17,8 @@ export default function MapPanel({ activeView, layersRef, padding, onViewReady }
   activeViewRef.current = activeView
   const [ready, setReady] = useState(false)
   const [error, setError] = useState(null)
+  const [mapView, setMapView] = useState(null)
+  const hoverInfo = useHoverInfo(mapView, activeView.id === 'security')
 
   useEffect(() => {
     let disposed = false
@@ -54,6 +58,7 @@ export default function MapPanel({ activeView, layersRef, padding, onViewReady }
       .then(() => {
         if (disposed) return
         setReady(true)
+        setMapView(view)
         onViewReady?.(view)
       })
       .catch((e) => {
@@ -81,6 +86,7 @@ export default function MapPanel({ activeView, layersRef, padding, onViewReady }
     <div className="map-panel">
       <div ref={mapDiv} className="map-view" />
       <MapTools ref={toolsDiv} panelRefs={panelRefs} />
+      <HoverTooltip info={hoverInfo} />
       {!ready && !error && (
         <div className="map-status">
           <span className="dot-pulse" /> Loading map layers…

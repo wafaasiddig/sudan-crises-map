@@ -19,6 +19,15 @@ export const DEFAULT_COUNTRY = 'Sudan'
 
 export const flagUrl = (code) => `https://flagcdn.com/w80/${code}.png`
 
+// Security date filter. Periods count back from the latest event in the data (the ACLED feed lags behind today).
+// `days: null` keeps the full rolling year the layer holds.
+export const PERIODS = [
+  { id: 'week', label: 'Past week', days: 7 },
+  { id: 'month', label: 'Past month', days: 30 },
+  { id: 'year', label: 'Past year', days: null },
+]
+export const DEFAULT_PERIOD = 'year'
+
 export const SCOPES = [
   { id: 'extent', label: 'Map view' },
   { id: 'selection', label: 'Selected Admin' },

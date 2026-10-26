@@ -4,10 +4,12 @@ import CountryBar from './components/CountryBar/CountryBar'
 import KpiRow from './components/KpiRow/KpiRow'
 import ChartList from './components/charts/ChartList'
 import MapPanel from './components/map/MapPanel'
+import PeriodFilter from './components/PeriodFilter/PeriodFilter'
 import Icon from './components/common/Icon'
 import { ICONS } from './components/common/icons'
 import { useStats } from './hooks/useStats'
 import { useSelectedArea } from './hooks/useSelectedArea'
+import { useEventPeriod } from './hooks/useEventPeriod'
 import { VIEWS, DISCLAIMER } from './config/views'
 import './App.css'
 
@@ -34,7 +36,8 @@ export default function App() {
   const layersRef = useRef(null)
   const { area, clearSelection } = useSelectedArea(view, true)
   const scope = area ? 'selection' : 'extent'
-  const { result, loading, error } = useStats(view, activeView, scope, area)
+  const { period, setPeriod, latest, where } = useEventPeriod(view)
+  const { result, loading, error } = useStats(view, activeView, scope, area, where)
 
   // Space taken by the floating cards, so the map centres in what's left visible.
   const padding = isDesktop ? { left: layersOpen ? 312 : 76, right: insightsOpen ? 404 : 76, top: 0, bottom: 0 } : NO_PADDING
@@ -104,13 +107,16 @@ export default function App() {
 
           <div className="insights-content" id="insights-content" hidden={!insightsOpen}>
             <div className="stats-body">
+              {activeView.id === 'security' && <PeriodFilter period={period} onChange={setPeriod} latest={latest} />}
               {error && <p className="error-msg" role="alert">Could not load statistics: {error}</p>}
-              {(!error || result) && <KpiRow result={result} loading={loading} />}
+              {/* Security shows its totals in the "Events by state" card instead of KPI tiles. */}
+              {(!error || result) && activeView.id !== 'security' && <KpiRow result={result} loading={loading} />}
               <div className="stats-scope">
                 <span aria-live="polite">For: {area ? area.name : 'Map view'}</span>
                 {area && <button type="button" className="reset-scope" onClick={clearSelection}>Back to map view</button>}
               </div>
               {(!error || result) && <ChartList result={result} loading={loading} />}
+              {result?.summary && <p className="stats-summary">{result.summary}</p>}
 
               <div className="note">
                 <Icon d={ICONS.info} size={14} />

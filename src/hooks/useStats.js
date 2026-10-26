@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react'
 import * as reactiveUtils from '@arcgis/core/core/reactiveUtils'
 import { LOADERS } from '../services/statsLoaders'
 
-/** Loads the active theme's statistics for the map extent or a selected admin. */
-export function useStats(view, activeView, scope, area) {
+/**
+ * Loads the active theme's statistics for the map extent or a selected admin.
+ * `filter` is any layer filter in effect (e.g. the Security date clause); a change reloads the figures.
+ */
+export function useStats(view, activeView, scope, area, filter) {
   const [state, setState] = useState({ result: null, loading: true, error: null })
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export function useStats(view, activeView, scope, area) {
       clearTimeout(timer)
       if (handle) handle.remove()
     }
-  }, [view, activeView, scope, area])
+  }, [view, activeView, scope, area, filter])
 
   return state
 }

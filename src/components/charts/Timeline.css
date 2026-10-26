@@ -1,5 +1,10 @@
-.timeline-note {
-  margin: 6px 0 0;
+.timeline {
+  /* Grey-blue fill under a dark line, like ACLED Explorer. */
+  --timeline-fill: color-mix(in srgb, var(--accent) 18%, #d9dfe6);
+}
+
+.timeline-axis {
+  margin: 0;
   font-size: 11px;
-  color: var(--muted);
+  color: #6b7280;
 }

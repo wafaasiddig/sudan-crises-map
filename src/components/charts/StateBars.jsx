@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Panel from '../common/Panel'
 import Columns from './Columns'
+import Timeline from './Timeline'
 import { fmt } from '../../utils/format'
 import './StateBars.css'
 
@@ -11,12 +12,12 @@ const METRICS = [
 ]
 
 // "Events by state" card, like ACLED Explorer: the Events / Fatalities totals double as the switch.
-// `chart.metrics` holds one { data, note, total } per metric, so switching needs no new query.
+// `chart.metrics` holds one { data, note, total, timeline } per metric, so switching needs no new query.
 export default function StateBars({ chart, loading }) {
   const [metric, setMetric] = useState('events')
   const reduceMotion = useReducedMotion()
   const current = METRICS.find((m) => m.id === metric)
-  const { data, note } = chart.metrics[metric]
+  const { data, note, timeline } = chart.metrics[metric]
 
   return (
     <Panel title={current.title} className={`chart-card state-bars is-${metric}`} loading={loading}>
@@ -45,6 +46,7 @@ export default function StateBars({ chart, loading }) {
           )
         })}
       </div>
+      <Timeline data={timeline.data} step={timeline.step} label={current.label} />
       <Columns data={data} note={note} showShare={false} />
     </Panel>
   )

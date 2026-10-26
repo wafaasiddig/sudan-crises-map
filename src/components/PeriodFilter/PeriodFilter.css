@@ -54,12 +54,6 @@
   position: relative;
 }
 
-.period-note {
-  margin: 0;
-  font-size: 11px;
-  color: var(--muted);
-}
-
 @media (pointer: coarse) {
   .period-buttons button {
     min-height: 44px;

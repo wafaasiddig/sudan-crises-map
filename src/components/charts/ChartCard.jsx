@@ -6,11 +6,13 @@ import Timeline from './Timeline'
 import StateBars from './StateBars'
 import '../common/Skeleton.css'
 import './ChartCard.css'
-export default function ChartCard({ chart, loading }) {
+export default function ChartCard({ chart, loading, metric, onMetric }) {
   // Has its own switch and title, so it draws its own card.
-  if (chart.type === 'stateBars') return <StateBars chart={chart} loading={loading} />
+  if (chart.type === 'stateBars') return <StateBars chart={chart} loading={loading} metric={metric} onMetric={onMetric} />
+  // Charts with `metrics` hold one { title, data } per metric; show the one the switch points at.
+  const { title, data, note } = chart.metrics ? chart.metrics[metric] : chart
   return (
-    <Panel title={chart.title} className="chart-card" loading={loading}>
+    <Panel title={title} className="chart-card" loading={loading}>
       {chart.type === 'donut' ? (
         <Donut data={chart.data} />
       ) : chart.type === 'timeline' ? (
@@ -18,7 +20,7 @@ export default function ChartCard({ chart, loading }) {
       ) : chart.type === 'stackedBars' ? (
         <StackedBars series={chart.series} data={chart.data} />
       ) : (
-        <Columns data={chart.data} note={chart.note} />
+        <Columns data={data} note={note} />
       )}
     </Panel>
   )

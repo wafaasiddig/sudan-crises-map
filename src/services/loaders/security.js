@@ -21,6 +21,11 @@ function topStates(rows, days) {
   return { type: 'stateBars', title: 'Events by state', metrics: { events: top('events'), fatalities: top('fatalities') } }
 }
 
+function byType(rows, field, title) {
+  const data = rows.map((r) => [r.event_type, r[field] || 0, EVENT_TYPE_COLORS[r.event_type]]).sort((a, b) => b[1] - a[1])
+  return { title, data }
+}
+
 export default async function security(view, g) {
   const [rows, days, states] = await Promise.all([
     stats(view, 'Violent events', [['count', 'OBJECTID', 'events'], ['sum', 'fatalities', 'fatalities']], 'event_type', g),
@@ -36,14 +41,12 @@ export default async function security(view, g) {
     summary: `${fmt(events)} events${span}, of type ${rows.map((r) => r.event_type).join(', ') || '–'}.`,
     charts: [
       topStates(states, days),
+      // Follows the Events / Fatalities switch on the state card, so it carries one { title, data } per metric.
       {
+        id: 'eventTypes',
         type: 'columns',
-        title: 'Fatalities by event type',
-        data: rows
-          .map((r) => [r.event_type, r.fatalities, EVENT_TYPE_COLORS[r.event_type]])
-          .sort((a, b) => b[1] - a[1]),
+        metrics: { events: byType(rows, 'events', 'Events by event type'), fatalities: byType(rows, 'fatalities', 'Fatalities by event type') },
       },
-      { type: 'donut', title: '% of events by type', data: rows.map((r) => [r.event_type, r.events]) },
     ],
     source: 'ACLED, filtered to the selected period',
   }

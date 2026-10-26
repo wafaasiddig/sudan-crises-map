@@ -14,7 +14,7 @@ export default function Timeline({ data, step, label = 'Events' }) {
 
   return (
     <div className="timeline">
-      <p className="timeline-axis">↑{label}</p>
+      <p className="timeline-axis">{label}</p>
       <LineChart
         height={120}
         hideLegend

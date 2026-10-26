@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import Panel from '../common/Panel'
 import Columns from './Columns'
@@ -13,8 +12,8 @@ const METRICS = [
 
 // "Events by state" card, like ACLED Explorer: the Events / Fatalities totals double as the switch.
 // `chart.metrics` holds one { data, note, total, timeline } per metric, so switching needs no new query.
-export default function StateBars({ chart, loading }) {
-  const [metric, setMetric] = useState('events')
+// The chosen metric lives in ChartList, so the event-type card below switches with it.
+export default function StateBars({ chart, loading, metric, onMetric }) {
   const reduceMotion = useReducedMotion()
   const current = METRICS.find((m) => m.id === metric)
   const { data, note, timeline } = chart.metrics[metric]
@@ -31,7 +30,7 @@ export default function StateBars({ chart, loading }) {
               role="radio"
               aria-checked={on}
               className={`state-switch-${m.id}${on ? ' on' : ''}`}
-              onClick={() => setMetric(m.id)}
+              onClick={() => onMetric(m.id)}
             >
               <span className="state-switch-value">{fmt(chart.metrics[m.id].total)}</span>
               <span className="state-switch-label">{m.label}</span>

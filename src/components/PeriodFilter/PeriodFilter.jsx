@@ -2,8 +2,6 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { PERIODS } from '../../config/filters'
 import './PeriodFilter.css'
 
-const formatDate = (ms) => new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
-
 // Past week / month / year buttons for the Security tab; the white highlight slides to the selected one.
 export default function PeriodFilter({ period, onChange, latest }) {
   const reduceMotion = useReducedMotion()
@@ -36,7 +34,6 @@ export default function PeriodFilter({ period, onChange, latest }) {
           )
         })}
       </div>
-      {latest && <p className="period-note">Data up to {formatDate(latest)}</p>}
     </div>
   )
 }
